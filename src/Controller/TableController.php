@@ -27,12 +27,18 @@ class TableController extends AbstractController
      */
     public function print(Request $request)
     {
-        // dump($request);
-        $n = $request->get('n');
-        // dump($n);
+        $method = $request->getMethod();
+
+        if ($method == 'GET') {
+            $n = $request->get('n');
+        } else {
+            $table_choice = $request->get('table_choice');
+            $n = $table_choice['table_number'];
+        }
 
         return $this->render('table/print.html.twig', [
             'n' => $n,
+            'method' => $method,
         ]);
     }
 
@@ -53,12 +59,32 @@ class TableController extends AbstractController
                 'formulaire' => $form->createView(),
             ]);
         }
-
         return $response;
-        
+    }
 
-
-
+    /**
+     * @Route("/select2")
+     */
+    public function select2(Request $request)
+    {
+        $form = $this->createForm(TableChoiceType::class, null, 
+            [
+                'method' => 'POST',
+                'action' => '/table/print'
+            ]
+        );
+        $form->handleRequest($request);
+        dump($request->getMethod());
+        if ($form->isSubmitted()) {
+            $data = $form->getData();
+            $ret['n'] = $data['table_number'];
+            $response = $this->redirectToRoute('tableprint', $ret);
+        } else {
+            $response = $this->render('table/select.html.twig', [
+                'formulaire' => $form->createView(),
+            ]);
+        }
+        return $response;
     }
 
 }
