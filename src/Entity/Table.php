@@ -15,6 +15,14 @@ class Table {
         $this->_max = $max;
     }
 
+    public function getMin(){
+        return $this->_min;            
+    }
+
+    public function getMax(){
+        $this->_max;            
+    }
+
     public function read(){
             
     }
@@ -23,9 +31,14 @@ class Table {
         
     }
     
-    public function calcTable() {
+    public function calcTable():array {
+        $result = array();
 
+        for ($i=$this->_min; $i <= $this->_max ; $i++) { 
+            $result[$i] = $i * $this->_num;
+        }
 
+        return $result;
     }
 
 }

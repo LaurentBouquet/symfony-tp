@@ -40,8 +40,8 @@ class TableController extends AbstractController
         $table = new Table($n);
 
         return $this->render('table/print.html.twig', [
-            'n' => $n,
-            'method' => $method,
+            'n' => $n,        
+            'values' => $table->calcTable(),
         ]);
     }
 
