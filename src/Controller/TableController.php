@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Table;
 use App\Form\TableChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,6 +36,8 @@ class TableController extends AbstractController
             $table_choice = $request->get('table_choice');
             $n = $table_choice['table_number'];
         }
+
+        $table = new Table($n);
 
         return $this->render('table/print.html.twig', [
             'n' => $n,
