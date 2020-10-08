@@ -11,7 +11,7 @@
 
     {{ form_start(formulaire)}}
 
-    {{ form_widget(formulaire.table_number)}}
+    {{ form_widget(formulaire.table_number, {value : num}) }} <!-- default value -->
     {{ form_widget(formulaire.Choisir)}}
 
     {{ form_end(formulaire)}}

@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Table;
 use App\Form\TableChoiceType;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/table", name="table")
@@ -40,7 +40,7 @@ class TableController extends AbstractController
         $table = new Table($n);
 
         return $this->render('table/print.html.twig', [
-            'n' => $n,        
+            'n' => $n,
             'values' => $table->calcTable(),
         ]);
     }
@@ -56,10 +56,22 @@ class TableController extends AbstractController
         if ($form->isSubmitted()) {
             $data = $form->getData();
             $ret['n'] = $data['table_number'];
+
+            // Enregistrer le n° de la table dans un cookie
+            $table = new Table($ret['n']);
+            $table->write();
+            
             $response = $this->redirectToRoute('tableprint', $ret);
         } else {
+            $num = 0;
+
+            // Lire le n° de la table dans le cookie
+            $table = new Table();
+            $num = $table->read($request);
+
             $response = $this->render('table/select.html.twig', [
                 'formulaire' => $form->createView(),
+                'num' => $num,
             ]);
         }
         return $response;
@@ -70,14 +82,17 @@ class TableController extends AbstractController
      */
     public function select2(Request $request)
     {
-        $form = $this->createForm(TableChoiceType::class, null, 
+        $form = $this->createForm(
+            TableChoiceType::class,
+            null,
             [
                 'method' => 'POST',
-                'action' => '/table/print'
+                'action' => '/table/print',
             ]
         );
+
         $form->handleRequest($request);
-        dump($request->getMethod());
+
         if ($form->isSubmitted()) {
             $data = $form->getData();
             $ret['n'] = $data['table_number'];
@@ -89,5 +104,4 @@ class TableController extends AbstractController
         }
         return $response;
     }
-
 }
